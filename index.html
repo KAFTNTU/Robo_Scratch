@@ -931,54 +931,37 @@ body{
   border-radius: 999px !important;
 }
 
-/* Ensure selects options are readable everywhere */
 select, option{
   color-scheme: dark;
 }
 
-/* v15 additions */
 :root{
   --status-dot-offset-x: 0px;
 
-  /* === Joystick UI position (ПК vs телефон) ===
-     Міняй значення нижче, і джойстик/панель посунеться:
-       ПК:       --joystick-ui-x-desktop / --joystick-ui-y-desktop
-       Телефон:  --joystick-ui-x-mobile  / --joystick-ui-y-mobile
-     (+right / -left)  (+down / -up)
-  */
   --joystick-ui-x-desktop: -27px;
   --joystick-ui-y-desktop: 300px;
 
-  /* Телефон (стартово трохи нижче; підкручуй під себе) */
   --joystick-ui-x-mobile: 2px;
   --joystick-ui-y-mobile: 340px;
 
-  /* Активні значення (не чіпай, вони підміняються через @media) */
   --joystick-ui-x: var(--joystick-ui-x-desktop);
   --joystick-ui-y: var(--joystick-ui-y-desktop);
 
-  /* === Joystick glow strength ("світіння") ===
-     Old glow alpha was ~0.30. Now ~0.08 (~-75%).
-  */
   --joystick-glow-alpha: 0.08;
   --joystick-glow-blur: 30px;
 }
 
-/* === Mobile (touch) overrides (must be AFTER the v15 :root block) === */
 @media (hover: none) and (pointer: coarse){
   :root{
     --joystick-ui-x: var(--joystick-ui-x-mobile);
     --joystick-ui-y: var(--joystick-ui-y-mobile);
 
-    /* прибираємо "світіння" джойстика на телефоні (менше лагів) */
     --joystick-glow-alpha: 0;
     --joystick-glow-blur: 0px;
   }
 
-  /* У Scratch-меню ховаємо кнопку Траса/Сумо онлайн на телефоні */
   #view-builder .btn-sim{ display:none !important; }
 
-  /* Joystick performance: прибрати важкі тіні + blur */
   #view-joystick .joystick-base,
   #view-dual .joystick-base,
   #joystick-base{
@@ -1017,10 +1000,8 @@ select, option{
   touch-action: none;
 }
 
-/* (compat) old knob not used now */
 .joystick-wrapper{ margin-top:0 !important; }
 
-/* custom block editor styling placeholder */
 .custom-block-editor-canvas{
   background:#0d141f!important;
   border-radius:14px!important;
@@ -1036,7 +1017,7 @@ select, option{
 </head>
 <body class="h-screen w-screen flex flex-col">
 
-    <!-- === HEADER === -->
+
     <header class="h-16 glass-header flex items-center justify-between px-4 z-50 absolute top-0 w-full">
         <div class="flex items-center gap-2">
             <span id="statusDot" class="status-dot"></span>
@@ -1050,7 +1031,7 @@ select, option{
             <button onclick="switchView('view-builder', this)" class="nav-btn" title="Scratch">
                 <i class="fa-solid fa-puzzle-piece text-lg"></i>
             </button>
-<button onclick="startDualMode(this)" class="nav-btn text-purple-400 hover:text-purple-300" title="4 Джойстики">
+<button onclick="startDualMode(this)" class="nav-btn text-slate-400 hover:text-slate-300" title="4 Джойстики">
                 <div class="grid grid-cols-2 gap-0.5" style="width: 18px; height: 18px;">
                     <div class="bg-current rounded-full opacity-70"></div>
                     <div class="bg-current rounded-full opacity-70"></div>
@@ -1059,10 +1040,10 @@ select, option{
                 </div>
             </button>
             <div class="w-px h-6 bg-slate-700 mx-1"></div>
-            <button onclick="openPassModal()" class="nav-btn text-emerald-500/80 hover:text-emerald-400" title="Пароль">
+            <button onclick="openPassModal()" class="nav-btn text-slate-400 hover:text-slate-300" title="Пароль">
                 <i class="fa-solid fa-lock text-lg"></i>
             </button>
-            <button id="btnLog" onclick="toggleLogModal()" class="nav-btn text-yellow-500/80 hover:text-yellow-400 relative" title="Лог (Затисни 3с)">
+            <button id="btnLog" onclick="toggleLogModal()" class="nav-btn text-slate-400 hover:text-slate-300 relative" title="Лог (Затисни 3с)">
                 <i class="fa-solid fa-book text-lg"></i>
             </button>
         </nav>
@@ -1072,21 +1053,15 @@ select, option{
         </button>
     </header>
 
-    <!-- === MAIN CONTENT === -->
-    <main class="flex-1 relative overflow-hidden bg-gradient-to-br from-slate-900 to-slate-950 pt-16">
-        
-        <!-- --- VIEW 1: JOYSTICK (MAIN) --- -->
-        <section id="view-joystick" class="absolute inset-0 flex flex-col items-center justify-center p-4 transition-opacity duration-300 relative">
-            
-            <!-- Joystick UI wrapper (centered + offset via CSS vars / drag) -->
-            <div id="joystickUi">
 
+    <main class="flex-1 relative overflow-hidden bg-gradient-to-br from-slate-900 to-slate-950 pt-16">
+        <section id="view-joystick" class="absolute inset-0 flex flex-col items-center justify-center p-4 transition-opacity duration-300 relative">
+            <div id="joystickUi">
             <div id="joystick-container" class="mb-2">
                 <div id="joystick-base">
                     <div id="joystick-stick" class="snap-back"></div>
                 </div>
-            </div>
-            
+            </div> 
             <div class="text-center mb-4 opacity-50 hidden md:block">
                 <span class="key-hint">W</span> <span class="key-hint">A</span> <span class="key-hint">S</span> <span class="key-hint">D</span> для руху
             </div>
@@ -2079,12 +2054,23 @@ const SLIP_END = 0xC0;
             updateTankLogic(lastJoyX, lastJoyY);
         });
 
+        let lastKeyboardEdgeVibrate = 0;
         const keys = { w: false, a: false, s: false, d: false };
         document.addEventListener('keydown', (e) => { if(activeView!=='view-joystick')return; const k=e.key.toLowerCase(); if(keys.hasOwnProperty(k)){keys[k]=true; updateKeyboardLogic();} });
         document.addEventListener('keyup', (e) => { if(activeView!=='view-joystick')return; const k=e.key.toLowerCase(); if(keys.hasOwnProperty(k)){keys[k]=false; updateKeyboardLogic();} });
         function updateKeyboardLogic() {
             let x=0,y=0; if(keys.w)y=100; if(keys.s)y=-100; if(keys.a)x=-100; if(keys.d)x=100;
             if(y!==0&&x!==0)x*=0.5; 
+            
+            // Легенька вібрація при повному натисканні
+            if((Math.abs(x)>=100 || Math.abs(y)>=100) && navigator.vibrate) {
+                const now = Date.now();
+                if(now - lastKeyboardEdgeVibrate > 300) {
+                    navigator.vibrate(20);
+                    lastKeyboardEdgeVibrate = now;
+                }
+            }
+            
             lastJoyX = x; lastJoyY = y;
             updateTankLogic(x,y);
         }
@@ -2126,6 +2112,7 @@ const SLIP_END = 0xC0;
         resetJoystick();
     }
 }
+let lastGyroEdgeVibrate = 0;
 function handleGyro(e) {
             if (!isGyroEnabled) return;
             if (!gyroCalibrated) {
@@ -2139,8 +2126,19 @@ function handleGyro(e) {
             let y = e.beta - gyroOffset.y;
             
             const maxTilt = 30;
+            const atEdge = Math.abs(x) >= maxTilt || Math.abs(y) >= maxTilt;
+            
             if (x > maxTilt) x = maxTilt; if (x < -maxTilt) x = -maxTilt;
             if (y > maxTilt) y = maxTilt; if (y < -maxTilt) y = -maxTilt;
+            
+            // Легенька вібрація при досягненні максимального нахилу
+            if(atEdge && navigator.vibrate) {
+                const now = Date.now();
+                if(now - lastGyroEdgeVibrate > 250) {
+                    navigator.vibrate(20);
+                    lastGyroEdgeVibrate = now;
+                }
+            }
             
             let valX = Math.round((x / maxTilt) * 100);
             let valY = Math.round((y / maxTilt) * 100); 
@@ -2164,11 +2162,22 @@ function handleGyro(e) {
             lastJoyX = 0; lastJoyY = 0;
             updateTankLogic(0,0); 
         }
+        let lastEdgeVibrate = 0; // cooldown для вібрації
         function moveJoy(e) {
             if(!dragging||isGyroEnabled)return; e.preventDefault();
             const cx=e.touches?e.touches[0].clientX:e.clientX; const cy=e.touches?e.touches[0].clientY:e.clientY;
             const dx=cx-joyCenter.x; const dy=cy-joyCenter.y;
-            const dist=Math.min(Math.hypot(dx,dy),maxDist); const angle=Math.atan2(dy,dx);
+            const actualDist=Math.hypot(dx,dy);
+            const dist=Math.min(actualDist,maxDist); const angle=Math.atan2(dy,dx);
+            
+            // Легенька вібрація при досягненні краю
+            if(actualDist >= maxDist && navigator.vibrate) {
+                const now = Date.now();
+                if(now - lastEdgeVibrate > 200) { // cooldown 200ms
+                    navigator.vibrate(25); // легенька вібрація
+                    lastEdgeVibrate = now;
+                }
+            }
             
             if(dist<10) stick.classList.add('braking'); else stick.classList.remove('braking');
             
