@@ -905,7 +905,7 @@ select, option{
   --joystick-ui-y-desktop: 300px;
 
   /* Телефон (стартово трохи нижче; підкручуй під себе) */
-  --joystick-ui-x-mobile: 24 px;
+  --joystick-ui-x-mobile: 24px;
   --joystick-ui-y-mobile: 340px;
 
   /* Активні значення (не чіпай, вони підміняються через @media) */
@@ -918,6 +918,17 @@ select, option{
   --joystick-glow-alpha: 0.08;
   --joystick-glow-blur: 30px;
 }
+
+/* === Mobile (touch) overrides (must be AFTER the v15 :root block) === */
+@media (hover: none) and (pointer: coarse){
+  :root{
+    --joystick-ui-x: var(--joystick-ui-x-mobile);
+    --joystick-ui-y: var(--joystick-ui-y-mobile);
+  }
+  /* У Scratch-меню ховаємо кнопку Траса/Сумо онлайн на телефоні */
+  #view-builder .btn-sim{ display:none !important; }
+}
+
 .header-status-dot{ position:relative; left:var(--status-dot-offset-x) !important; }
 
 /* Joystick layout wrapper: centered, then shifted by CSS vars */
@@ -1010,7 +1021,7 @@ select, option{
             <div class="w-full max-w-xs flex flex-col gap-3 bg-slate-800/40 p-4 rounded-2xl border border-slate-700/30 backdrop-blur-sm">
                 
                 <div class="flex items-center justify-between gap-4">
-                    <div class="bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-700 text-center flex-1">
+                    <div class="bg-slate-900px-3 py-1.5 rounded-lg border border-slate-700 text-center flex-1">
                         <span class="text-[10px] text-green-500 font-bold mr-1">L</span>
                         <span id="motorLDisplay" class="text-blue-400 font-mono font-bold">0</span>
                     </div>
@@ -1019,7 +1030,7 @@ select, option{
                         <i class="fa-solid fa-mobile-screen-button text-sm"></i>
                     </button>
 
-                    <div class="bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-700 text-center flex-1">
+                    <div class="bg-slate-900px-3 py-1.5 rounded-lg border border-slate-700 text-center flex-1">
                         <span class="text-[10px] text-green-500 font-bold mr-1">R</span>
                         <span id="motorRDisplay" class="text-blue-400 font-mono font-bold">0</span>
                     </div>
@@ -1037,7 +1048,7 @@ select, option{
                     <i class="fa-solid fa-sliders"></i> Налаштування моторів
                 </button>
 
-                <div class="bg-black/40 px-3 py-1 rounded text-[10px] font-mono tracking-widest text-slate-400 border border-slate-800/50 text-center mt-2">
+                <div class="bg-black/40px-3 py-1 rounded text-[10px] font-mono tracking-widest text-slate-400 border border-slate-800/50 text-center mt-2">
                     HEX: <span id="joyHex" class="text-yellow-500 font-bold">00 00 00 00</span>
                 </div>
             </div>
@@ -1089,7 +1100,7 @@ select, option{
                 </div>
             </div>
 
-            <div class="w-full h-full flex items-center justify-center gap-8 px-4 pt-10">
+            <div class="w-full h-full flex items-center justify-center gap-8px-4 pt-10">
                 
                 <div class="joy-quad-wrapper">
                     <div>
@@ -1131,7 +1142,7 @@ select, option{
 
             </div>
             
-            <div class="absolute bottom-28 bg-black/80 px-6 py-2 rounded-full text-xs font-mono text-purple-400 border border-slate-700 shadow-lg z-20">
+            <div class="absolute bottom-28 bg-black/80px-6 py-2 rounded-full text-xs font-mono text-purple-400 border border-slate-700 shadow-lg z-20">
                 HEX: <span id="quadPacketHex">--</span>
             </div>
         </section>
