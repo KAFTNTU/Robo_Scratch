@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RoboScratch</title>
+    <title>RoboControl Modular V12.0 Full</title>
     <link rel="icon" href="data:,">
     
     <script src="https://cdn.tailwindcss.com"></script>
@@ -83,14 +83,34 @@
             box-shadow: 0 0 25px rgba(239, 68, 68, 0.6);
         }
 
-        .lock-btn { transition: all 0.3s; }
-        .gyro-active { background-color: #8b5cf6 !important; box-shadow: 0 0 15px #8b5cf6; color: white !important; border-color: #8b5cf6 !important; animation: pulse-purple 2s infinite; }
-        @keyframes pulse-purple {
-            0% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(139, 92, 246, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
-        }
 
+/* --- Mobile performance: remove expensive blur/glow --- */
+@media (hover: none) and (pointer: coarse){
+    #joystick-base{
+        /* remove outer glow, keep only inner depth */
+        box-shadow: inset 0 0 18px rgba(0,0,0,0.8) !important;
+    }
+    #joystick-stick{
+        box-shadow: 0 6px 14px rgba(0,0,0,0.55) !important;
+    }
+    .backdrop-blur-sm,
+    .backdrop-blur-md,
+    .backdrop-blur-lg,
+    .backdrop-blur-xl,
+    .backdrop-blur-2xl{
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+}
+
+
+        .lock-btn { transition: all 0.3s; }
+        .gyro-active{
+  background-color: #3b82f6 !important; /* blue when gyro enabled */
+  border-color: #3b82f6 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 0 2px rgba(59,130,246,0.35) !important;
+}
         /* --- SPEED SLIDER --- */
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
         input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #3b82f6; cursor: pointer; margin-top: -8px; box-shadow: 0 0 10px rgba(59,130,246,0.12); }
@@ -113,6 +133,12 @@
         
         .joy-quad-stick { position: absolute; width: 56px; height: 56px; background: radial-gradient(circle at 30% 30%, #a855f7, #7e22ce); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); box-shadow: 0 4px 10px rgba(0,0,0,0.5); z-index: 10; pointer-events: none; }
         .joy-quad-stick.snap { transition: transform 0.2s; }
+
+        /* Quad layout positioning */
+        #quadLayout{ transform: none; }
+        @media (hover: none) and (pointer: coarse){
+            #quadLayout{ transform: translateY(-25%); }
+        }
 
         /* --- BLOCKLY --- */
         #blocklyDiv { 
@@ -924,9 +950,37 @@ select, option{
   :root{
     --joystick-ui-x: var(--joystick-ui-x-mobile);
     --joystick-ui-y: var(--joystick-ui-y-mobile);
+
+    /* прибираємо "світіння" джойстика на телефоні (менше лагів) */
+    --joystick-glow-alpha: 0;
+    --joystick-glow-blur: 0px;
   }
+
   /* У Scratch-меню ховаємо кнопку Траса/Сумо онлайн на телефоні */
   #view-builder .btn-sim{ display:none !important; }
+
+  /* Joystick performance: прибрати важкі тіні + blur */
+  #view-joystick .joystick-base,
+  #view-dual .joystick-base,
+  #joystick-base{
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: #0f172a !important;
+    border: 1px solid rgba(255,255,255,0.10) !important;
+  }
+
+  #view-joystick .joystick-stick,
+  #view-dual .joystick-stick,
+  #joystick-stick{
+    box-shadow: 0 8px 18px rgba(0,0,0,0.55) !important;
+  }
+
+  #view-joystick .joystick-stick.braking,
+  #view-dual .joystick-stick.braking,
+  #joystick-stick.braking{
+    box-shadow: none !important;
+  }
 }
 
 .header-status-dot{ position:relative; left:var(--status-dot-offset-x) !important; }
@@ -1100,9 +1154,9 @@ select, option{
                 </div>
             </div>
 
-            <div class="w-full h-full flex items-center justify-center gap-8px-4 pt-10">
-                
-                <div class="joy-quad-wrapper">
+                        <div id="quadLayout" class="w-full h-full flex flex-col items-center justify-center">
+                <div class="flex items-start justify-center gap-12">
+<div class="joy-quad-wrapper">
                     <div>
                         <div class="joy-quad-label">M1</div>
                         <div id="joy1-container" class="joy-quad-container">
@@ -1139,11 +1193,11 @@ select, option{
                         </div>
                     </div>
                 </div>
+                </div>
 
-            </div>
-            
-            <div class="absolute bottom-28 bg-black/80px-6 py-2 rounded-full text-xs font-mono text-purple-400 border border-slate-700 shadow-lg z-20">
-                HEX: <span id="quadPacketHex">--</span>
+                <div class="mt-6 bg-black/80 px-6 py-2 rounded-full text-xs font-mono text-purple-400 border border-slate-700 shadow-lg z-20">
+                    HEX: <span id="quadPacketHex">--</span>
+                </div>
             </div>
         </section>
     </main>
@@ -2022,16 +2076,35 @@ const SLIP_END = 0xC0;
             } else { activateGyro(); }
         }
         function activateGyro() {
-            isGyroEnabled = !isGyroEnabled;
-            if (isGyroEnabled) {
-                gyroBtn.classList.add('gyro-active'); 
-                gyroCalibrated = false; 
-                window.addEventListener('deviceorientation', handleGyro);
-            } else {
-                gyroBtn.classList.remove('gyro-active'); window.removeEventListener('deviceorientation', handleGyro); resetJoystick();
-            }
-        }
-        function handleGyro(e) {
+    isGyroEnabled = !isGyroEnabled;
+    gyroBtn.setAttribute('aria-pressed', isGyroEnabled ? 'true' : 'false');
+    gyroBtn.title = isGyroEnabled
+        ? 'Гіроскоп: увімкнено (перше натискання калібрує нуль)'
+        : 'Гіроскоп (натисни щоб увімкнути/обнулити)';
+
+    if (isGyroEnabled) {
+        // IMPORTANT: stop any previous joystick/keyboard motion immediately
+        try{
+            dragging = false;
+            if (typeof keys === 'object') { Object.keys(keys).forEach(k => keys[k] = false); }
+        }catch(e){}
+        resetJoystick(); // sends 0,0 and centers the stick
+
+        gyroBtn.classList.add('gyro-active');
+
+        // Calibrate "zero" on the FIRST orientation event after the user enabled gyro.
+        gyroCalibrated = false;
+        gyroOffset.x = 0;
+        gyroOffset.y = 0;
+
+        window.addEventListener('deviceorientation', handleGyro, { passive: true });
+    } else {
+        gyroBtn.classList.remove('gyro-active');
+        window.removeEventListener('deviceorientation', handleGyro);
+        resetJoystick();
+    }
+}
+function handleGyro(e) {
             if (!isGyroEnabled) return;
             if (!gyroCalibrated) {
                 gyroOffset.x = e.gamma;
