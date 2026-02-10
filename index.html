@@ -24,6 +24,10 @@
             /* Background glow (joystick screen). 0 = no glow, 1 = full */
             --bg-glow1-alpha: 0.24; /* was ~0.95 */
             --bg-glow2-alpha: 0.21; /* was ~0.85 */
+
+            /* Quad motor layout vertical shift (negative = up, positive = down) */
+            --quad-layout-shift-desktop: 0px;
+            --quad-layout-shift-mobile: 5%;
         }
         /* --- GLOBAL STYLES --- */
         body {
@@ -105,11 +109,18 @@
 
 
         .lock-btn { transition: all 0.3s; }
-        .gyro-active{
+        #gyroBtn.gyro-active,
+#gyroBtn[aria-pressed="true"],
+#gyroBtn[data-active="1"]{
   background-color: #3b82f6 !important; /* blue when gyro enabled */
   border-color: #3b82f6 !important;
   color: #ffffff !important;
   box-shadow: 0 0 0 2px rgba(59,130,246,0.35) !important;
+}
+#gyroBtn.gyro-active i,
+#gyroBtn[aria-pressed="true"] i,
+#gyroBtn[data-active="1"] i{
+  color: #ffffff !important;
 }
         /* --- SPEED SLIDER --- */
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
@@ -135,9 +146,9 @@
         .joy-quad-stick.snap { transition: transform 0.2s; }
 
         /* Quad layout positioning */
-        #quadLayout{ transform: none; }
+        #quadLayout{ transform: translateY(var(--quad-layout-shift-desktop)); }
         @media (hover: none) and (pointer: coarse){
-            #quadLayout{ transform: translateY(-25%); }
+            #quadLayout{ transform: translateY(var(--quad-layout-shift-mobile)); }
         }
 
         /* --- BLOCKLY --- */
@@ -2048,6 +2059,7 @@ const SLIP_END = 0xC0;
         const stick = document.getElementById('joystick-stick');
         const base = document.getElementById('joystick-base');
         const gyroBtn = document.getElementById('gyroBtn');
+        if (gyroBtn) gyroBtn.dataset.active = '0';
         let dragging = false;
         let joyCenter = { x: 0, y: 0 };
         const maxDist = 90;
@@ -2091,6 +2103,7 @@ const SLIP_END = 0xC0;
         resetJoystick(); // sends 0,0 and centers the stick
 
         gyroBtn.classList.add('gyro-active');
+        gyroBtn.dataset.active = '1';
 
         // Calibrate "zero" on the FIRST orientation event after the user enabled gyro.
         gyroCalibrated = false;
@@ -2100,6 +2113,7 @@ const SLIP_END = 0xC0;
         window.addEventListener('deviceorientation', handleGyro, { passive: true });
     } else {
         gyroBtn.classList.remove('gyro-active');
+        gyroBtn.dataset.active = '0';
         window.removeEventListener('deviceorientation', handleGyro);
         resetJoystick();
     }
