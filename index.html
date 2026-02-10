@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="uk">
 <head>
@@ -9,27 +8,23 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- CORE BLOCKLY -->
+
     <script src="https://unpkg.com/blockly/blockly.min.js"></script>
     <script src="https://unpkg.com/blockly/javascript_compressed.js"></script>
     <script src="https://unpkg.com/blockly/msg/uk.js"></script>
 
     <style>
         :root{
-            /* === Quick tuning knobs === */
-            /* Move the red OFFLINE/ONLINE dot left/right (negative = left, positive = right) */
+
             --status-dot-x: 14px;
 
-            /* Background glow (joystick screen). 0 = no glow, 1 = full */
-            --bg-glow1-alpha: 0.24; /* was ~0.95 */
-            --bg-glow2-alpha: 0.21; /* was ~0.85 */
+            --bg-glow1-alpha: 0.24; 
+            --bg-glow2-alpha: 0.21; 
 
-            /* Quad motor layout vertical shift (negative = up, positive = down) */
             --quad-layout-shift-desktop: 0px;
             --quad-layout-shift-mobile: 5%;
         }
-        /* --- GLOBAL STYLES --- */
+        
         body {
             overscroll-behavior: none;
             touch-action: none;
@@ -47,12 +42,10 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.4);
         }
 
-        
-        /* --- SCRATCH MODE (hide global header, maximize workspace) --- */
         body.scratch-mode header.glass-header { display: none !important; }
         body.scratch-mode main { padding-top: 0 !important; }
         body.scratch-mode .sensor-row { top: 10px !important; }
-/* --- JOYSTICK --- */
+
         #joystick-container { 
             position: relative; 
             width: 280px; 
@@ -87,33 +80,23 @@
             box-shadow: 0 0 25px rgba(239, 68, 68, 0.6);
         }
 
-
-/* --- Mobile performance: remove expensive blur/glow --- */
 @media (hover: none) and (pointer: coarse){
     #joystick-base{
-        /* remove outer glow, keep only inner depth */
+        
         box-shadow: inset 0 0 18px rgba(0,0,0,0.8) !important;
     }
     #joystick-stick{
         box-shadow: 0 6px 14px rgba(0,0,0,0.55) !important;
     }
-    .backdrop-blur-sm,
-    .backdrop-blur-md,
-    .backdrop-blur-lg,
-    .backdrop-blur-xl,
-    .backdrop-blur-2xl{
-        backdrop-filter: none !important;
-        -webkit-backdrop-filter: none !important;
-    }
+    
 }
 
-
         .lock-btn { transition: all 0.3s; }
-        /* Активний стан кнопки гіроскопа - яскравий синій колір з світінням */
+        
         #gyroBtn.gyro-active,
         #gyroBtn[aria-pressed="true"],
         #gyroBtn[data-active="1"] {
-          background-color: #3b82f6 !important; /* синій фон */
+          background-color: #3b82f6 !important; 
           border-color: #2563eb !important;
           color: #ffffff !important;
           box-shadow: 0 0 20px rgba(59,130,246,0.6), 0 0 0 3px rgba(59,130,246,0.3) !important;
@@ -123,19 +106,18 @@
         #gyroBtn[data-active="1"] i {
           color: #ffffff !important;
         }
-        /* При наведенні на активну кнопку - ще яскравіше */
+        
         #gyroBtn.gyro-active:hover,
         #gyroBtn[aria-pressed="true"]:hover,
         #gyroBtn[data-active="1"]:hover {
           background-color: #2563eb !important;
           box-shadow: 0 0 25px rgba(59,130,246,0.8), 0 0 0 3px rgba(59,130,246,0.4) !important;
         }
-        /* --- SPEED SLIDER --- */
+        
         input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
         input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #3b82f6; cursor: pointer; margin-top: -8px; box-shadow: 0 0 10px rgba(59,130,246,0.12); }
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #334155; border-radius: 2px; }
 
-        /* --- QUAD JOYSTICK --- */
         .joy-quad-wrapper { display: flex; flex-direction: column; gap: 30px; align-items: center; }
         .joy-quad-label { font-size: 14px; color: #94a3b8; font-weight: bold; text-transform: uppercase; margin-bottom: 6px; text-align: center; }
         
@@ -153,13 +135,11 @@
         .joy-quad-stick { position: absolute; width: 56px; height: 56px; background: radial-gradient(circle at 30% 30%, #a855f7, #7e22ce); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); box-shadow: 0 4px 10px rgba(0,0,0,0.5); z-index: 10; pointer-events: none; }
         .joy-quad-stick.snap { transition: transform 0.2s; }
 
-        /* Quad layout positioning */
         #quadLayout{ transform: translateY(var(--quad-layout-shift-desktop)); }
         @media (hover: none) and (pointer: coarse){
             #quadLayout{ transform: translateY(var(--quad-layout-shift-mobile)); }
         }
 
-        /* --- BLOCKLY --- */
         #blocklyDiv { 
             position: absolute; 
             top: 64px; 
@@ -171,8 +151,7 @@
         }
         
         .blocklySvg { background-color: transparent !important; }
-        
-        /* Fixed Toolbox Styling to prevent zooming issues */
+
         .blocklyToolboxDiv { 
             background-color: #1f2937 !important; 
             border: 1px solid rgba(255, 255, 255, 0.15); 
@@ -199,7 +178,6 @@
         
         .blocklyScrollbarHandle, .blocklyScrollbarBackground { display: none !important; pointer-events: none !important; opacity: 0 !important; }
 
-        /* --- INCOMPATIBLE BLOCK GLOW --- */
         .blockly-error-glow > .blocklyPath {
             stroke: #ef4444 !important;
             stroke-width: 3px !important;
@@ -211,7 +189,6 @@
             font-weight: bold;
         }
 
-        /* --- SENSOR DASHBOARD & BUTTONS --- */
         .sensor-row {
             position: absolute; 
             top: 75px; 
@@ -241,7 +218,6 @@
         .sensor-label { font-size: 8px; color: #94a3b8; font-weight: bold; text-transform: uppercase; white-space: nowrap; }
         .sensor-value { font-family: 'Courier New', monospace; font-size: 14px; font-weight: bold; color: #34d399; }
 
-        /* Top Buttons */
         .top-btn {
             pointer-events: auto;
             width: 35px; height: 35px;
@@ -255,7 +231,7 @@
             font-size: 14px;
         }
         .top-btn:active { transform: scale(0.9); }
-        /* PC-only: extra toolbar buttons (🧩 / 🎮) */
+        
         #rcCbOpenBtn.top-btn, #rcSimOpenBtn.top-btn{
             background: rgba(30,41,59,0.95);
             border: 1px solid rgba(255,255,255,0.12);
@@ -265,7 +241,6 @@
             border-color: rgba(255,255,255,0.18);
         }
 
-        /* Sumo room input next to "Сумо онлайн" */
         .rcsim2d-roomInput{
             width: 84px;
             height: 35px;
@@ -282,14 +257,12 @@
         .rcsim2d-roomInput::placeholder{ color: rgba(226,232,240,0.45); }
         body.layout-mobile .rcsim2d-roomInput{ display:none !important; }
 
-        
         .btn-example { background: #f59e0b; }
         .btn-run { background: #22c55e; }
         .btn-run.running { background: #ef4444; animation: pulse-red 2s infinite; }
         
         @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 14px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
 
-        /* UI Elements */
         .status-dot {
             width: 8px;
             height: 8px;
@@ -297,7 +270,7 @@
             background: #ef4444;
             display: inline-block;
             transition: all 0.3s;
-            /* allow manual offset tweak */
+            
             transform: translateX(var(--status-dot-x));
         }
         .connected { background: #22c55e; box-shadow: 0 0 8px #22c55e; }
@@ -325,8 +298,7 @@
             background: #2563eb; color: white; border-color: #60a5fa;
         }
         .btn-check-input { display: none; }
-    
-/* ====== Responsive toolbox layout ====== */
+
 body.layout-mobile .blocklyToolboxDiv{
   bottom: 64px !important;
   left: 50% !important;
@@ -338,20 +310,18 @@ body.layout-mobile .blocklyToolboxDiv{
   flex-direction: row !important;
 }
 
-
-/* === Mobile (touch) tweaks === */
 @media (hover: none) and (pointer: coarse){
   :root{
     --joystick-ui-x: var(--joystick-ui-x-mobile);
     --joystick-ui-y: var(--joystick-ui-y-mobile);
   }
-  /* У Scratch-меню ховаємо кнопку Траса/Сумо онлайн на телефоні */
+  
   #view-builder .btn-sim{ display:none !important; }
 }
 
 body.layout-desktop .blocklyToolboxDiv{
   left: 14px !important;
-  /* Prevent toolbox from sitting under the top glass bar (without shrinking the workspace) */
+  
   top: 104px !important;
   bottom: 84px !important;
   transform: none !important;
@@ -361,7 +331,6 @@ body.layout-desktop .blocklyToolboxDiv{
   flex-direction: column !important;
   padding: 10px !important;
 
-  /* Glass / iOS-like look */
   border-radius: 22px !important;
   background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.03)) !important;
   background-color: rgba(14, 22, 40, .70) !important;
@@ -377,7 +346,6 @@ body.layout-desktop .blocklyTreeRow{
   width: 100% !important;
   margin: 4px 0 !important;
 
-  /* Make categories feel like list items */
   padding: 10px 12px !important;
   border-radius: 14px !important;
   background: rgba(255,255,255,.06) !important;
@@ -385,7 +353,6 @@ body.layout-desktop .blocklyTreeRow{
   gap: 10px !important;
 }
 
-/* Category color strip (Blockly keeps the per-category background on this element) */
 body.layout-desktop .blocklyTreeIcon{
   width: 10px !important;
   height: 30px !important;
@@ -410,13 +377,9 @@ body.layout-desktop .blocklyTreeLabel{
   letter-spacing: .2px;
 }
 
-
-/* Make workspace fill to bottom on desktop, keep 64px space only on mobile */
 body.layout-desktop #blocklyDiv { bottom: 0px !important; }
 body.layout-mobile #blocklyDiv { bottom: 64px !important; }
 
-
-        /* builder top mini buttons */
         .btn-exit { background: rgba(30, 41, 59, 0.75); }
         .btn-exit:hover { background: rgba(51, 65, 85, 0.9); transform: translateY(-1px); }
 
@@ -429,8 +392,6 @@ body.layout-mobile #blocklyDiv { bottom: 64px !important; }
         .btn-log-mini { background: rgba(202, 138, 4, 0.85); }
         .btn-log-mini:hover { background: rgba(234, 179, 8, 0.95); transform: translateY(-1px); }
 
-
-        /* Mobile top bar (sensor-row) polish */
         body.layout-mobile .sensor-row {
             left: 10px !important;
             width: auto !important;
@@ -442,48 +403,38 @@ body.layout-mobile #blocklyDiv { bottom: 64px !important; }
             overflow-x: auto !important;
             overflow-y: hidden !important;
             -webkit-overflow-scrolling: touch !important;
-            scrollbar-width: none; /* Firefox */
+            scrollbar-width: none; 
 
         }
         body.layout-mobile .sensor-row .top-btn {
             width: 44px !important;
             height: 44px !important;
             border-radius: 14px !important;
-            /* Don't override button colors here — individual button classes set their own backgrounds */
+            
             border: 1px solid rgba(148,163,184,0.22) !important;
             color: #e2e8f0 !important;
         }
         body.layout-mobile .sensor-row .top-btn:hover { transform: none !important; }
         body.layout-mobile .sensor-row .top-btn:active { transform: translateY(1px) !important; }
-        .sensor-row::-webkit-scrollbar { display: none; } /* WebKit */
+        .sensor-row::-webkit-scrollbar { display: none; } 
 
         @media (max-width: 380px) {
             .sensor-row { gap: 8px !important; padding: 8px 8px !important; }
             .sensor-row .top-btn { width: 40px !important; height: 40px !important; border-radius: 12px !important; }
         }
 
-
-        /* Keep RUN green, keep Step only in debug controls */
         body.layout-mobile .sensor-row .btn-run { background: rgba(34,197,94,0.92) !important; border: 1px solid rgba(34,197,94,0.55) !important; }
         body.layout-mobile .sensor-row .btn-run.running { background: rgba(239,68,68,0.92) !important; border: 1px solid rgba(239,68,68,0.55) !important; }
 
-        /* Hide extra debug buttons on mobile (keep only step) */
         body.layout-mobile #rcDbgToggle,
         body.layout-mobile #rcDbgPause { display: none !important; }
 
-
-        /* --- STEP (one-button debug) --- */
         .btn-step {
             background: rgba(34,197,94,0.18);
             border: 1px solid rgba(34,197,94,0.35);
         }
         .btn-step:hover { background: rgba(34,197,94,0.26); }
 
-        /* Bottom "now executing" bar (builder only) */
-
-
-
-/* ===== iOS Glass redesign: Joystick / Controller views ===== */
 :root{
   --ui-glass: rgba(14,22,40,.42);
   --ui-stroke: rgba(255,255,255,.14);
@@ -495,7 +446,6 @@ body.layout-mobile #blocklyDiv { bottom: 64px !important; }
   --ui-blue: #3aa0ff;
 }
 
-/* Background */
 main.flex-1.relative{
   background:
     radial-gradient(1200px 700px at 20% 20%, rgba(17,27,58,var(--bg-glow1-alpha)) 0%, transparent 55%),
@@ -503,7 +453,6 @@ main.flex-1.relative{
     rgba(6,10,22,.98) !important;
 }
 
-/* Top header glass pill */
 .glass-header{
   background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03)) !important;
   background-color: var(--ui-glass) !important;
@@ -515,10 +464,9 @@ main.flex-1.relative{
   box-shadow: var(--ui-shadow2) !important;
   backdrop-filter: blur(14px) saturate(140%) !important;
   -webkit-backdrop-filter: blur(14px) saturate(140%) !important;
-  overflow: visible !important; /* keep BT button from being clipped by pill rounding */
+  overflow: visible !important; 
 }
 
-/* Small tool group in header */
 .glass-header .bg-slate-800\/40,
 .glass-header .bg-slate-800\/50{
   background: rgba(255,255,255,.06) !important;
@@ -527,10 +475,9 @@ main.flex-1.relative{
   -webkit-backdrop-filter: blur(12px) saturate(140%) !important;
 }
 
-/* Bluetooth button (top-right) */
 #btConnect{
   margin-right: 6px !important;
-  /* neutral (no blue glow / no extra border frame) */
+  
   background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03)) !important;
   background-color: rgba(148,163,184,.16) !important;
   border: none !important;
@@ -540,7 +487,6 @@ main.flex-1.relative{
 #btConnect:hover{ background-color: rgba(148,163,184,.22) !important; }
 #btConnect:active{ filter: brightness(.95); }
 
-/* ===== Scratch-like top menu islands (keep big bar, remove inner group pill) ===== */
 :root{
   --nav-btn-size: 44px;
   --nav-btn-radius: 16px;
@@ -551,7 +497,6 @@ main.flex-1.relative{
   --nav-btn-active-border: rgba(58,160,255,.26);
 }
 
-/* Remove the inner "group pill" background/border so buttons become separate islands */
 #rcTopNav{
   background: transparent !important;
   border: none !important;
@@ -561,7 +506,6 @@ main.flex-1.relative{
   gap: 5px !important;
 }
 
-/* Individual island buttons */
 .nav-btn{
   width: var(--nav-btn-size);
   height: var(--nav-btn-size);
@@ -593,14 +537,12 @@ main.flex-1.relative{
   box-shadow: 0 12px 26px rgba(58,160,255,.14) !important;
 }
 
-/* Divider between groups: subtle, not tied to any container background */
 #rcTopNav .w-px{
   background: rgba(255,255,255,.10) !important;
   height: 28px !important;
   margin: 0 6px !important;
 }
 
-/* Make sure joystick selectors match actual IDs */
 #joystick-base{
   background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.10), rgba(255,255,255,.02)) !important;
   border: 1px solid rgba(58,160,255,.30) !important;
@@ -614,7 +556,6 @@ main.flex-1.relative{
   border: 1px solid rgba(255,255,255,.10) !important;
 }
 
-/* Joystick base (glass ring) */
 #view-joystick .joystick-base,
 #view-dual .joystick-base{
   background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.10), rgba(255,255,255,.02)) !important;
@@ -624,7 +565,6 @@ main.flex-1.relative{
   -webkit-backdrop-filter: blur(14px) saturate(140%) !important;
 }
 
-/* Joystick stick (glow) */
 #view-joystick .joystick-stick,
 #view-dual .joystick-stick{
   background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.18), rgba(255,255,255,.05)) , linear-gradient(180deg, rgba(58,160,255,.95), rgba(58,160,255,.55)) !important;
@@ -632,7 +572,6 @@ main.flex-1.relative{
   border: 1px solid rgba(255,255,255,.10) !important;
 }
 
-/* Bottom controller card => glass */
 #view-joystick .bg-slate-800\/40,
 #view-joystick .bg-slate-900,
 #view-dual .bg-slate-800\/40,
@@ -645,7 +584,6 @@ main.flex-1.relative{
   -webkit-backdrop-filter: blur(14px) saturate(140%) !important;
 }
 
-/* Buttons in card */
 #view-joystick button.bg-slate-700,
 #view-dual button.bg-slate-700{
   border-radius: 18px !important;
@@ -659,13 +597,11 @@ main.flex-1.relative{
   filter: brightness(1.06);
 }
 
-/* Slider accents */
 #view-joystick input[type="range"],
 #view-dual input[type="range"]{
   accent-color: var(--ui-blue);
 }
 
-/* Labels */
 #view-joystick .text-slate-300,
 #view-joystick .text-slate-400,
 #view-dual .text-slate-300,
@@ -673,7 +609,6 @@ main.flex-1.relative{
   color: rgba(255,255,255,.70) !important;
 }
 
-/* Make small keycaps nicer */
 #view-joystick .bg-slate-800\/60,
 #view-joystick .bg-slate-800\/70{
   background: rgba(255,255,255,.06) !important;
@@ -681,17 +616,11 @@ main.flex-1.relative{
   border-radius: 12px !important;
 }
 
-/* Responsive spacing */
 @media (max-width: 700px){
   .glass-header{ margin: 10px 10px 0 !important; }
   #view-joystick .w-full.max-w-xs{ max-width: min(92vw, 420px) !important; }
 }
 
-
-
-/* ============================================================
-   GLASS THEME OVERRIDES (v3) — apply to ALL popups/windows
-   ============================================================ */
 :root{
   --g-bg0:#060a16;
   --g-glass: rgba(14,22,40,.42);
@@ -706,14 +635,12 @@ main.flex-1.relative{
   --g-blue:#3aa0ff; --g-red:#ff4b4b;
 }
 
-/* Keep app background consistent */
 body{
   background: radial-gradient(1200px 700px at 20% 20%, rgba(17,27,58,var(--bg-glow1-alpha)) 0%, transparent 55%),
               radial-gradient(900px 600px at 70% 60%, rgba(11,42,46,var(--bg-glow2-alpha)) 0%, transparent 55%),
               var(--g-bg0) !important;
 }
 
-/* Generic glass card */
 .glass-card,
 [id$="Modal"] > div,
 #logModal > div{
@@ -726,20 +653,17 @@ body{
   -webkit-backdrop-filter: blur(14px) saturate(140%);
 }
 
-/* Modal overlays: nicer dim */
 [id$="Modal"]{
   background: radial-gradient(900px 600px at 50% 20%, rgba(58,160,255,.03), transparent 60%),
               rgba(0,0,0,.62) !important;
 }
 
-/* Modal titles */
 [id$="Modal"] h3,
 [id$="Modal"] h2{
   color: var(--g-text) !important;
   text-shadow: 0 10px 22px rgba(0,0,0,.35);
 }
 
-/* Inputs/selects inside modals */
 [id$="Modal"] input,
 [id$="Modal"] select,
 [id$="Modal"] textarea{
@@ -751,22 +675,19 @@ body{
   box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
 }
 
-/* Native select dropdown options (fix: options were white, hard to see) */
 [id$="Modal"] select option{
   background: rgba(2,6,23,.96) !important;
   color: rgba(255,255,255,.92) !important;
 }
 
-/* Hide scrollbars inside modals (keep scroll working) */
 [id$="Modal"] > div{
-  scrollbar-width: none; /* Firefox */
+  scrollbar-width: none; 
 }
 [id$="Modal"] > div::-webkit-scrollbar{
   width: 0;
   height: 0;
 }
 
-/* Tuning modal: slightly smaller and less tall (user preference) */
 #tuningModal > div{
   max-height: 84vh !important;
   max-width: 360px !important;
@@ -778,7 +699,6 @@ body{
   box-shadow: 0 0 0 3px rgba(58,160,255,.05);
 }
 
-/* Buttons inside modals */
 [id$="Modal"] button{
   border-radius: 18px !important;
   border: 1px solid var(--g-stroke2) !important;
@@ -790,19 +710,16 @@ body{
 [id$="Modal"] button:hover{ filter: brightness(1.06); }
 [id$="Modal"] button:active{ transform: translateY(1px) scale(.99); }
 
-/* Primary save button (tuning) */
 #tuningModal button,
 #exampleModal button{
   border-color: rgba(58,160,255,.12) !important;
   box-shadow: 0 16px 32px rgba(58,160,255,.045);
 }
 
-/* Log modal: keep it as bottom-sheet on mobile but glass */
 #logModal > div{
   border-radius: 22px 22px 22px 22px !important;
 }
 
-/* Log header icon buttons: make close area wider & cleaner */
 #logModal button[title="Закрити"],
 #logModal button[title="Очистити"]{
   width: 34px !important;
@@ -816,7 +733,6 @@ body{
 }
 #logModal button[title="Закрити"]{ font-size: 18px !important; }
 
-/* Small “glow only where needed” */
 .glow-blue{
   box-shadow: 0 16px 32px rgba(58,160,255,.045), 0 0 0 1px rgba(58,160,255,.07) inset;
 }
@@ -824,20 +740,10 @@ body{
   box-shadow: 0 16px 32px rgba(255,75,75,.14), 0 0 0 1px rgba(255,75,75,.22) inset;
 }
 
-/* Fallback if blur unsupported */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))){
   [id$="Modal"] > div{ background-color: rgba(14,22,40,.78) !important; }
 }
 
-
-/* ===== v6+ tweaks (center header + BT safe padding + Scratch glass toolbar) ===== */
-
-/* Center the top tool nav (so BT button doesn't shift visual center)
-   IMPORTANT: the header originally had `w-full` + margins.
-   With absolute positioning that makes the element wider than the viewport,
-   which clips the BT circle at the right edge.
-   Fix: use left/right insets instead of width:100%.
-*/
 .glass-header{
   position:absolute !important;
   left:16px !important;
@@ -858,13 +764,11 @@ body{
   margin-right:0 !important;
 }
 
-/* Make header allow BT to breathe */
 .glass-header{
   overflow: visible !important;
-  padding-right: 70px !important; /* keep space so BT button isn't clipped by rounded header */
+  padding-right: 70px !important; 
 }
 
-/* Scratch/Blockly top icon row: same iOS glass pill look */
 #view-builder .sensor-row{
   top: 2px !important;
   left:50% !important;
@@ -897,13 +801,11 @@ body{
   transform: translateY(1px) scale(.99);
 }
 
-/* Small screens: slightly smaller inset so BT stays visible */
 @media (max-width: 520px){
   .glass-header{ left:10px !important; right:10px !important; }
   #btConnect{ right:10px !important; }
 }
 
-/* Custom blocks: rounded glass color picker */
 #view-builder input[type="color"]{
   -webkit-appearance:none;
   appearance:none;
@@ -920,7 +822,6 @@ body{
 #view-builder input[type="color"]::-webkit-color-swatch{border:none;border-radius:10px;}
 #view-builder input[type="color"]::-moz-color-swatch{border:none;border-radius:10px;}
 
-/* Custom blocks: make top bar glassy consistent */
 #view-builder .topbar,
 #view-builder .builder-topbar,
 #view-builder .rc-topbar{
@@ -987,7 +888,6 @@ select, option{
 
 .header-status-dot{ position:relative; left:var(--status-dot-offset-x) !important; }
 
-/* Joystick layout wrapper: centered, then shifted by CSS vars */
 #joystickUi{
   position: absolute;
   left: 50%;
@@ -1016,7 +916,6 @@ select, option{
 </style>
 </head>
 <body class="h-screen w-screen flex flex-col">
-
 
     <header class="h-16 glass-header flex items-center justify-between px-4 z-50 absolute top-0 w-full">
         <div class="flex items-center gap-2">
@@ -1053,15 +952,18 @@ select, option{
         </button>
     </header>
 
-
     <main class="flex-1 relative overflow-hidden bg-gradient-to-br from-slate-900 to-slate-950 pt-16">
+
         <section id="view-joystick" class="absolute inset-0 flex flex-col items-center justify-center p-4 transition-opacity duration-300 relative">
+
             <div id="joystickUi">
+
             <div id="joystick-container" class="mb-2">
                 <div id="joystick-base">
                     <div id="joystick-stick" class="snap-back"></div>
                 </div>
-            </div> 
+            </div>
+            
             <div class="text-center mb-4 opacity-50 hidden md:block">
                 <span class="key-hint">W</span> <span class="key-hint">A</span> <span class="key-hint">S</span> <span class="key-hint">D</span> для руху
             </div>
@@ -1103,8 +1005,6 @@ select, option{
             </div>
         </section>
 
-
-        <!-- --- VIEW 2: BUILDER (SCRATCH) --- -->
         <section id="view-builder" class="absolute inset-0 flex flex-col hidden opacity-0 transition-opacity duration-300">
             
             <div class="sensor-row">
@@ -1139,15 +1039,7 @@ select, option{
 <div id="blocklyDiv" class="flex-1 mt-0"></div>
         </section>
 
-        <!-- --- VIEW 3: QUAD MODE --- -->
         <section id="view-dual" class="absolute inset-0 hidden opacity-0 flex flex-col items-center justify-center bg-slate-950">
-             <div class="absolute top-0 w-full h-12 bg-slate-900/50 flex justify-between items-center px-6 border-b border-white/5 backdrop-blur-sm z-10">
-                <div class="flex items-center gap-2">
-                    <span class="w-2 h-2 bg-purple-500 rounded-full"></span>
-                    <span class="text-xs text-purple-400 font-bold tracking-[0.2em] uppercase">4 Motor Control</span>
-                </div>
-            </div>
-
                         <div id="quadLayout" class="w-full h-full flex flex-col items-center justify-center">
                 <div class="flex items-start justify-center gap-12">
 <div class="joy-quad-wrapper">
@@ -1196,10 +1088,6 @@ select, option{
         </section>
     </main>
 
-
-    <!-- === MODALS === -->
-
-    
     <div id="exampleModal" class="fixed inset-0 bg-black/80 z-[70] hidden flex items-center justify-center backdrop-blur-sm p-4">
         <div class="bg-slate-900 w-full max-w-sm rounded-2xl shadow-2xl border border-slate-700 p-5 overflow-y-auto max-h-[90vh]">
             <div class="flex items-center justify-between gap-3 mb-4">
@@ -1325,7 +1213,6 @@ select, option{
                     </div>
                 </div>
 
-
                 <div class="space-y-2">
                     <span class="text-xs text-slate-400 uppercase tracking-widest font-bold">Інверсія моторів</span>
                     <div class="flex gap-2">
@@ -1392,12 +1279,10 @@ select, option{
                 </div>
             </div>
             <div id="logContainer" class="flex-1 overflow-y-auto p-4 space-y-1 bg-black/20 font-mono text-xs">
-                <div class="text-slate-500 italic">-- Журнал подій (буфер 1500 строк) --</div>
             </div>
         </div>
     </div>
 
-    <!-- XML Blocks -->
     <xml id="toolbox" style="display: none">
         <category name="🕷️ Павук" colour="#A855F7">
              <block type="spider_center"></block>
@@ -1523,11 +1408,9 @@ select, option{
         </category>
         <category name="Змінні" colour="%{BKY_VARIABLES_HUE}" custom="VARIABLE"></category>
     </xml>
-    
-    <!-- Load Block Definitions -->
 
     <script>
-        // === 🎨 НАЛАШТУВАННЯ КОЛЬОРІВ ===
+
         const THEME_CONFIG = {
             menuBg: '#1f2937',      
             menuText: '#ffffff',    
@@ -1536,7 +1419,6 @@ select, option{
             flyoutOpacity: 0.95     
         };
 
-        // === GLOBAL STATE ===
         let isConnected = false;
         let device, characteristic;
         let isGyroEnabled = false;
@@ -1568,7 +1450,6 @@ select, option{
         document.getElementById('turnSensSlider').value = tuning.turnSens;
         document.getElementById('turnSensDisplay').innerText = tuning.turnSens + "%";
 
-        // Robot mode (car / spider)
         const robotModeSelect = document.getElementById('robotModeSelect');
         const spiderTuningBox = document.getElementById('spiderTuningBox');
 
@@ -1577,13 +1458,11 @@ select, option{
             const isSpider = robotModeSelect.value === 'spider';
             spiderTuningBox.classList.toggle('hidden', !isSpider);
 
-            // (optional) disable car-only toggles visually when spider is selected
             document.getElementById('fourWdCheck').disabled = isSpider;
             document.getElementById('invLCheck').disabled = isSpider;
             document.getElementById('invRCheck').disabled = isSpider;
         }
 
-        // Spider sliders
         const spEls = {
             V_UP:   { el: document.getElementById('spVup'),     out: document.getElementById('spVupVal') },
             V_DOWN: { el: document.getElementById('spVdown'),   out: document.getElementById('spVdownVal') },
@@ -1628,20 +1507,14 @@ select, option{
         applyRobotModeUI();
         syncSpiderUIFromTuning();
 
-
         const statusDot = document.getElementById('statusDot');
         const statusText = document.getElementById('statusText');
 
-        // Allow quick manual positioning of the red dot from console:
-        //   setStatusDotOffset(-6)  // move left
-        //   setStatusDotOffset(8)   // move right
         window.setStatusDotOffset = function(px){
             const v = (typeof px === 'number') ? `${px}px` : String(px);
             document.documentElement.style.setProperty('--status-dot-x', v);
         };
 
-        // --- Joystick UI position is controlled only by CSS variables in :root ---
-        // Edit --joystick-ui-y to move the whole panel up/down.
         const btnConnect = document.getElementById('btConnect');
         const motorLDisplay = document.getElementById('motorLDisplay');
         const motorRDisplay = document.getElementById('motorRDisplay');
@@ -1650,7 +1523,6 @@ select, option{
         const speedVal = document.getElementById('speedVal');
         const btnLog = document.getElementById('btnLog');
 
-        // LONG PRESS FOR LOG
         let logPressTimer;
         btnLog.addEventListener('mousedown', () => {
             logPressTimer = setTimeout(() => {
@@ -1665,10 +1537,9 @@ select, option{
         });
         btnLog.addEventListener('touchend', () => clearTimeout(logPressTimer));
 
-        // LOGGING FUNCTIONS
         function log(msg, type = 'info') {
             const container = document.getElementById('logContainer');
-            if (container.childElementCount > 1500) {
+            if (container.childElementCount > 10000) {
                 container.removeChild(container.firstElementChild);
             }
             const el = document.createElement('div');
@@ -1717,24 +1588,22 @@ select, option{
             tuning.spider.V_DOWN = parseInt(document.getElementById('spVdown').value);
             tuning.spider.H_LEFT = parseInt(document.getElementById('spHleft').value);
             tuning.spider.H_RIGHT = parseInt(document.getElementById('spHright').value);
-            tuning.spider.H_CENTER = 90; // fixed center
+            tuning.spider.H_CENTER = 90;
             tuning.spider.stepAmpMax = parseInt(document.getElementById('spAmp').value);
             tuning.spider.deadzone = parseInt(document.getElementById('spDead').value);
             tuning.spider.baseHz = parseFloat(document.getElementById('spBaseHz').value);
             tuning.spider.kHz = parseFloat(document.getElementById('spKHz').value);
 
-            // keep UI in sync
             if (typeof applyRobotModeUI === 'function') applyRobotModeUI();
             if (typeof syncSpiderUIFromTuning === 'function') syncSpiderUIFromTuning();
 
             localStorage.setItem('roboTuning_v9', JSON.stringify(tuning));
         }
 
-        // 100ms control packet tick (car or spider)
         let _spiderPhase = 0;
 
         function computeSpiderFromJoystick(x, y) {
-            // x,y: -100..100
+
             const s = tuning.spider || {};
             const dead = s.deadzone ?? 8;
 
@@ -1747,7 +1616,6 @@ select, option{
                 };
             }
 
-            // 4 sectors
             let sector = 'UP';
             if (Math.abs(y) >= Math.abs(x) && y > 0) sector = 'UP';
             else if (Math.abs(y) >= Math.abs(x) && y < 0) sector = 'DOWN';
@@ -1772,7 +1640,6 @@ select, option{
 
             const dirSign = (sector === 'DOWN') ? -1 : 1;
 
-            // Gait: diagonal pairs A(1,3) and B(2,4)
             const inA = _spiderPhase < 0.5;
             const lifted = [inA, !inA, inA, !inA];
 
@@ -1789,18 +1656,16 @@ select, option{
         setInterval(() => {
             if (!isConnected) return;
 
-            // Single joystick view drives either car or spider depending on tuning.robotMode
             if (activeView === 'view-joystick') {
                 if ((tuning.robotMode || 'car') === 'spider') {
                     const x = lastJoyX;
                     const y = lastJoyY;
 
-                    const dt = 0.1; // 100ms
+                    const dt = 0.1;
                     const mag = Math.min(100, Math.sqrt(x*x + y*y));
                     const s = tuning.spider || {};
                     const dead = s.deadzone ?? 8;
 
-                    // advance phase only when moving
                     if (mag >= dead) {
                         const baseHz = s.baseHz ?? 0.9;
                         const kHz = s.kHz ?? 1.6;
@@ -1984,10 +1849,8 @@ const SLIP_END = 0xC0;
             } catch(e) { log(e, 'err'); }
         });
 
-        
-        // --- Scratch Mode: hide global header when in block editor ---
         function toggleScratchMode(force) {
-            // force=true -> enable, force=false -> disable, force=undefined -> toggle
+
             const enable = (force === undefined) ? !document.body.classList.contains('scratch-mode') : !!force;
             document.body.classList.toggle('scratch-mode', enable);
         }
@@ -1996,7 +1859,6 @@ const SLIP_END = 0xC0;
             const btn = document.querySelector("button[onclick*=\"switchView('view-joystick'\"]");
             switchView('view-joystick', btn || null);
         }
-
 
         function openSim2D(){
             try{
@@ -2025,7 +1887,7 @@ const SLIP_END = 0xC0;
             activeView = viewId;
             if(viewId !== 'view-joystick' && isGyroEnabled) toggleGyro();
             if(viewId === 'view-builder' && typeof Blockly !== 'undefined') setTimeout(() => Blockly.svgResize(workspace), 100);
-            // auto: when entering blocks view, hide global header to free space
+
             if(viewId === 'view-builder') toggleScratchMode(true);
             else toggleScratchMode(false);
         }
@@ -2061,8 +1923,7 @@ const SLIP_END = 0xC0;
         function updateKeyboardLogic() {
             let x=0,y=0; if(keys.w)y=100; if(keys.s)y=-100; if(keys.a)x=-100; if(keys.d)x=100;
             if(y!==0&&x!==0)x*=0.5; 
-            
-            // Легенька вібрація при повному натисканні
+
             if((Math.abs(x)>=100 || Math.abs(y)>=100) && navigator.vibrate) {
                 const now = Date.now();
                 if(now - lastKeyboardEdgeVibrate > 300) {
@@ -2089,17 +1950,16 @@ const SLIP_END = 0xC0;
         : 'Гіроскоп (натисни щоб увімкнути/обнулити)';
 
     if (isGyroEnabled) {
-        // IMPORTANT: stop any previous joystick/keyboard motion immediately
+
         try{
             dragging = false;
             if (typeof keys === 'object') { Object.keys(keys).forEach(k => keys[k] = false); }
         }catch(e){}
-        resetJoystick(); // sends 0,0 and centers the stick
+        resetJoystick();
 
         gyroBtn.classList.add('gyro-active');
         gyroBtn.dataset.active = '1';
 
-        // Calibrate "zero" on the FIRST orientation event after the user enabled gyro.
         gyroCalibrated = false;
         gyroOffset.x = 0;
         gyroOffset.y = 0;
@@ -2130,8 +1990,7 @@ function handleGyro(e) {
             
             if (x > maxTilt) x = maxTilt; if (x < -maxTilt) x = -maxTilt;
             if (y > maxTilt) y = maxTilt; if (y < -maxTilt) y = -maxTilt;
-            
-            // Легенька вібрація при досягненні максимального нахилу
+
             if(atEdge && navigator.vibrate) {
                 const now = Date.now();
                 if(now - lastGyroEdgeVibrate > 250) {
@@ -2162,19 +2021,18 @@ function handleGyro(e) {
             lastJoyX = 0; lastJoyY = 0;
             updateTankLogic(0,0); 
         }
-        let lastEdgeVibrate = 0; // cooldown для вібрації
+        let lastEdgeVibrate = 0;
         function moveJoy(e) {
             if(!dragging||isGyroEnabled)return; e.preventDefault();
             const cx=e.touches?e.touches[0].clientX:e.clientX; const cy=e.touches?e.touches[0].clientY:e.clientY;
             const dx=cx-joyCenter.x; const dy=cy-joyCenter.y;
             const actualDist=Math.hypot(dx,dy);
             const dist=Math.min(actualDist,maxDist); const angle=Math.atan2(dy,dx);
-            
-            // Легенька вібрація при досягненні краю
+
             if(actualDist >= maxDist && navigator.vibrate) {
                 const now = Date.now();
-                if(now - lastEdgeVibrate > 200) { // cooldown 200ms
-                    navigator.vibrate(25); // легенька вібрація
+                if(now - lastEdgeVibrate > 200) {
+                    navigator.vibrate(25);
                     lastEdgeVibrate = now;
                 }
             }
@@ -2319,8 +2177,6 @@ function handleGyro(e) {
 
         var workspace = null;
 
-        // --- Neutral block: покази датчиків (не підключається ні до чого) ---
-// Додається в категорію "Контроль" як "sensor_display"
 if (window.Blockly) {
     Blockly.Blocks = Blockly.Blocks || {};
     Blockly.Blocks['sensor_display'] = {
@@ -2338,15 +2194,12 @@ if (window.Blockly) {
 
             this.setColour(50);
 
-            // Ніяких з’єднань: блок не можна вставити у сценарій
-            // (за замовчуванням previous/next/output = немає)
             this.setDeletable(true);
             this.setMovable(true);
             this.setTooltip("Показує поточні значення датчиків. Блок 'нейтральний' і не виконується.");
         }
     };
 
-    // No code generation
     if (window.javascript && javascript.javascriptGenerator) {
         javascript.javascriptGenerator.forBlock = javascript.javascriptGenerator.forBlock || {};
         javascript.javascriptGenerator.forBlock['sensor_display'] = function () {
@@ -2355,7 +2208,6 @@ if (window.Blockly) {
     }
 }
 
-// Update values inside all 'sensor_display' blocks (легко і без лагів)
 function rcUpdateSensorDisplayBlocks() {
     try {
         if (!workspace || !window.Blockly) return;
@@ -2370,17 +2222,16 @@ function rcUpdateSensorDisplayBlocks() {
             b.setFieldValue(String(s[2] ?? 0), 'P3');
             b.setFieldValue(String(s[3] ?? 0), 'P4');
         }
-    } catch (e) { /* ignore */ }
+    } catch (e) {  }
 }
 
 let _isMobile = null;
-
 
         function lockFlyoutScale(ws) {
             const flyout = ws && ws.getFlyout ? ws.getFlyout() : null;
             const fw = flyout && flyout.getWorkspace ? flyout.getWorkspace() : null;
             if (!fw) return;
-            // 1.0 = fixed block size in toolbox/flyout (won't change with workspace zoom)
+
             if (Math.abs(fw.getScale() - 1) > 0.001) {
                 fw.setScale(1);
                 flyout.reflow();
@@ -2401,7 +2252,6 @@ let _isMobile = null;
                 theme: CustomTheme,
                 renderer: 'zelos',
 
-                // Mobile: toolbox at bottom (horizontal). Desktop: toolbox on the left (vertical).
                 horizontalLayout: mobile,
                 toolboxPosition: mobile ? 'end' : 'start',
 
@@ -2411,10 +2261,8 @@ let _isMobile = null;
                 move: { scrollbars: true, drag: true, wheel: false }
             });
 
-            // Restore blocks
             if (dom) Blockly.Xml.domToWorkspace(dom, workspace);
 
-            // Apply theme css tweaks (without forcing workspace scale)
             const style = document.createElement('style');
             style.innerHTML = `.blocklyToolboxDiv { background-color: ${THEME_CONFIG.menuBg} !important; }
             .blocklyFlyoutBackground { fill: ${THEME_CONFIG.flyoutBg} !important; fill-opacity: ${THEME_CONFIG.flyoutOpacity} !important; }
@@ -2422,16 +2270,13 @@ let _isMobile = null;
             .blocklyTreeSelected .blocklyTreeRow { background-color: ${THEME_CONFIG.menuSelected} !important; }`;
             document.head.appendChild(style);
 
-            // Lock toolbox/flyout block size
             lockFlyoutScale(workspace);
             workspace.addChangeListener((e) => {
                 if (e.type === Blockly.Events.VIEWPORT_CHANGE) lockFlyoutScale(workspace);
             });
 
-            // Keep compatibility with existing code
             window.workspace = workspace;
 
-            // Keep sensor display blocks updated (even if sensor packets are slow)
             if (!window.__rcSensorDispTimer) {
                 window.__rcSensorDispTimer = setInterval(rcUpdateSensorDisplayBlocks, 200);
             }
@@ -2454,14 +2299,12 @@ let _isMobile = null;
 function checkStop() {
             return `if (typeof window._shouldStop !== 'undefined' && window._shouldStop) { throw "STOPPED"; }\n`;
         }
-        
-        // === 🕷️ VALIDATION LOGIC ===
-// Дебаунс щоб не лагало під час перетягування блока
+
 let __rcValidateTimer = null;
 function scheduleValidateWorkspace() {
     clearTimeout(__rcValidateTimer);
     __rcValidateTimer = setTimeout(() => {
-        try { validateWorkspace(); } catch (e) { /* ignore */ }
+        try { validateWorkspace(); } catch (e) {  }
     }, 60);
 }
 
@@ -2493,8 +2336,6 @@ function validateWorkspace() {
         }
     }
 }
-
-// --- HELPERS FROM ORIGINAL ---
 
         let moveHistory = [];
         let isCodeRunning = false;
@@ -2571,7 +2412,7 @@ function validateWorkspace() {
         };
 
         function loadExample(type) {
-             // ... logic kept ...
+
              if(type === 'spider_demo') {
                  workspace.clear();
                  Blockly.Xml.domToWorkspace(Blockly.utils.xml.textToDom('<xml xmlns="https://developers.google.com/blockly/xml"><block type="spider_center" x="50" y="50"><next><block type="spider_config"><value name="HEIGHT"><shadow type="math_number"><field name="NUM">40</field></shadow></value><value name="SPEED"><shadow type="math_number"><field name="NUM">80</field></shadow></value><next><block type="spider_anim"><field name="ANIM">WAVE</field><next><block type="spider_walk_time"><field name="DIR">FWD</field><value name="SEC"><shadow type="math_number"><field name="NUM">3</field></shadow></value><next><block type="spider_anim"><field name="ANIM">SIT</field></block></next></block></next></block></next></block></next></block>'), workspace);
@@ -2599,7 +2440,6 @@ function validateWorkspace() {
                     let name = String(raw).trim();
                     if (!name) return;
 
-                    // sanitize filename
                     name = name.replace(/[\/:*?"<>|]/g, "_");
                     if (!name.toLowerCase().endsWith(".xml")) name += ".xml";
 
@@ -2645,12 +2485,10 @@ function validateWorkspace() {
 (function(){
   "use strict";
 
-  // ---------- small helpers ----------
   const nowMs = () => (typeof performance !== "undefined" && performance.now) ? performance.now() : Date.now();
   const fmtTime = () => new Date().toLocaleTimeString().split(" ")[0];
   const safeName = (s) => String(s ?? "").trim().replace(/[\\/:*?"<>|]/g, "_").replace(/\s+/g, " ").trim();
 
-  // ---------- 1) Safety Watchdog STOP ----------
   const RCWatchdog = {
     enabled: true,
     timeoutMs: 1200,
@@ -2662,7 +2500,7 @@ function validateWorkspace() {
     },
     stopNow(reason){
       try{
-        // Avoid spamming STOP too often
+
         const t = nowMs();
         if (t - this.lastStopAt < 350) return;
         this.lastStopAt = t;
@@ -2677,12 +2515,10 @@ function validateWorkspace() {
       this._timer = setInterval(() => {
         if (!this.enabled) return;
 
-        // Only enforce when connected OR simulating
         const activeLink = !!window.isConnected || !!window.isSimulating;
 
         if (!activeLink) return;
 
-        // Enforce when code is running or motors are non-zero
         const motors = window.motorState || {m1:0,m2:0,m3:0,m4:0};
         const motorsActive = (motors.m1||0)!==0 || (motors.m2||0)!==0 || (motors.m3||0)!==0 || (motors.m4||0)!==0;
         const running = !!window.isCodeRunning;
@@ -2696,7 +2532,6 @@ function validateWorkspace() {
         }
       }, this.tickMs);
 
-      // Stop when tab hidden / leaving
       document.addEventListener("visibilitychange", () => {
         if (document.hidden) this.stopNow("tab hidden");
       });
@@ -2706,7 +2541,6 @@ function validateWorkspace() {
     }
   };
 
-  // ---------- 6) Telemetry (buffer + CSV export) ----------
   const RCTelemetry = {
     enabled: true,
     maxRows: 6000,
@@ -2750,7 +2584,6 @@ function ensureLogExportButton(){
     const modal = document.getElementById("logModal");
     if (!modal) return;
 
-    // Prefer centered slot in header (for nice layout on mobile)
     const centerSlot = modal.querySelector("#rcLogHeaderCenter");
     const btnBar = centerSlot || modal.querySelector(".flex.items-center.justify-between") || modal.querySelector(".flex.items-center") || modal;
 
@@ -2763,7 +2596,6 @@ function ensureLogExportButton(){
     btnBar.appendChild(btn);
 }
 
-  // Boot (few retries, no infinite loops)
   let tries = 0;
   (function boot(){
     tries++;
