@@ -387,8 +387,26 @@ body.layout-mobile #blocklyDiv { bottom: 64px !important; }
         .btn-hide-header { background: rgba(30, 41, 59, 0.75); }
         .btn-hide-header:hover { background: rgba(51, 65, 85, 0.9); transform: translateY(-1px); }
 
-        .btn-bt-mini { background: rgba(37, 99, 235, 0.85); }
-        .btn-bt-mini:hover { background: rgba(59, 130, 246, 0.95); transform: translateY(-1px); }
+        .btn-bt-mini{
+            background: rgba(148,163,184,0.16);
+            border: 1px solid rgba(148,163,184,0.22);
+            color: #e2e8f0;
+        }
+        .btn-bt-mini:hover{ background: rgba(148,163,184,0.22); transform: translateY(-1px); }
+
+        /* Bluetooth state (Scratch mini button) */
+        .btn-bt-mini.bt-off{
+            background: rgba(248,113,113,0.12);
+            border-color: rgba(248,113,113,0.35);
+            color: rgba(248,113,113,0.92);
+        }
+        .btn-bt-mini.bt-on{
+            background: rgba(34,197,94,0.12);
+            border-color: rgba(34,197,94,0.35);
+            color: rgba(34,197,94,0.92);
+        }
+        .btn-bt-mini.bt-off:hover{ background: rgba(248,113,113,0.16); }
+        .btn-bt-mini.bt-on:hover{ background: rgba(34,197,94,0.16); }
 
         .btn-log-mini { background: rgba(202, 138, 4, 0.85); }
         .btn-log-mini:hover { background: rgba(234, 179, 8, 0.95); transform: translateY(-1px); }
@@ -1013,7 +1031,7 @@ select, option{
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
 
-                <button onclick="document.getElementById('btConnect')?.click()" class="top-btn btn-bt-mini" title="Bluetooth">
+                <button id="scratchBtMini" onclick="document.getElementById('btConnect')?.click()" class="top-btn btn-bt-mini bt-off" title="Bluetooth">
                     <i class="fa-brands fa-bluetooth-b"></i>
                 </button>
 
@@ -1582,6 +1600,15 @@ select, option{
         };
 
         const btnConnect = document.getElementById('btConnect');
+        const scratchBtMini = document.getElementById('scratchBtMini');
+
+        function setScratchBtState(connected){
+            if(!scratchBtMini) return;
+            scratchBtMini.classList.toggle('bt-on', !!connected);
+            scratchBtMini.classList.toggle('bt-off', !connected);
+        }
+        setScratchBtState(false);
+
         const motorLDisplay = document.getElementById('motorLDisplay');
         const motorRDisplay = document.getElementById('motorRDisplay');
         const joyHex = document.getElementById('joyHex');
@@ -1886,6 +1913,7 @@ const SLIP_END = 0xC0;
                 });
                 device.addEventListener('gattserverdisconnected', () => {
                     isConnected = false; statusDot.classList.remove('connected'); statusText.innerText = "OFFLINE";
+                    setScratchBtState(false);
                     btnConnect.classList.remove('bg-red-600'); btnConnect.classList.add('bg-blue-600');
                     log('Disconnected', 'err');
                 });
@@ -1910,6 +1938,7 @@ const SLIP_END = 0xC0;
                 } catch(e){}
 
                 isConnected = true; statusDot.classList.add('connected'); statusText.innerText = "ONLINE";
+                setScratchBtState(true);
                 btnConnect.classList.remove('bg-blue-600'); btnConnect.classList.add('bg-red-600');
                 log('Connected!', 'info');
             } catch(e) { log(e, 'err'); }
